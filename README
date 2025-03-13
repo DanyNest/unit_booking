@@ -5,4 +5,7 @@ HI there, dear reviewer! I hope my teach task will find you Well!
 3.Swagger is available
 4.Also if you want to check redis order status update faster - you can simply change value redis.status.timeout in properties
 now it's 900 seconds(15 minutes)
+
 ENJOY! AND THANK YOU FOR YOUR TIME!
+
+Btw! Don't be scared by code style. I used google-formatter :)
