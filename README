@@ -2,6 +2,7 @@ HI there, dear reviewer! I hope my teach task will find you Well!
 
 1.First step - you should run docker
 2.Second step - run docker-compose up -d
+3.Third step - run app. Here we go! 
 3.Swagger is available
 4.Also if you want to check redis order status update faster - you can simply change value redis.status.timeout in properties
 now it's 900 seconds(15 minutes)
