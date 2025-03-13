@@ -1,0 +1,150 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+  <changeSet id="create-unit-table" author="danynest">
+    <createTable tableName="unit">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="unit_name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="accommodation_type" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="floor_number" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rooms_count" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="DECIMAL(10, 2)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="created_at" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="create-booking-table" author="danynest">
+    <createTable tableName="booking_order">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="order_creation_date" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="booking_start_date" type="TIMESTAMP"/>
+      <column name="booking_end_date" type="TIMESTAMP"/>
+      <column name="unit_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="danynest" id="add-booking-foreign-key">
+    <addForeignKeyConstraint
+      baseTableName="booking_order"
+      baseColumnNames="unit_id"
+      referencedTableName="unit"
+      referencedColumnNames="id"
+      constraintName="fk_booking_order_unit"/>
+  </changeSet>
+
+  <changeSet id="insert-initial-units" author="danynest">
+    <insert tableName="unit">
+      <column name="unit_name" value="APARTMENTS A1"/>
+      <column name="accommodation_type" value="APARTMENTS"/>
+      <column name="floor_number" value="1"/>
+      <column name="rooms_count" value="2"/>
+      <column name="price" value="150.00"/>
+      <column name="description" value="Cozy APARTMENTS with city view."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Studio B2"/>
+      <column name="accommodation_type" value="STUDIO"/>
+      <column name="floor_number" value="2"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="100.00"/>
+      <column name="description" value="Modern studio in the heart of the city."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Hotel Room C3"/>
+      <column name="accommodation_type" value="HOTEL_ROOM"/>
+      <column name="floor_number" value="3"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="80.00"/>
+      <column name="description" value="Standard hotel room with amenities."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="APARTMENTS D4"/>
+      <column name="accommodation_type" value="APARTMENTS"/>
+      <column name="floor_number" value="4"/>
+      <column name="rooms_count" value="3"/>
+      <column name="price" value="200.00"/>
+      <column name="description" value="Family APARTMENTS with balcony."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Studio E5"/>
+      <column name="accommodation_type" value="STUDIO"/>
+      <column name="floor_number" value="5"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="120.00"/>
+      <column name="description" value="Luxury studio with panoramic view."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Hotel Room F6"/>
+      <column name="accommodation_type" value="HOTEL_ROOM"/>
+      <column name="floor_number" value="6"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="90.00"/>
+      <column name="description" value="Deluxe hotel room with breakfast included."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="APARTMENTS G7"/>
+      <column name="accommodation_type" value="APARTMENTS"/>
+      <column name="floor_number" value="7"/>
+      <column name="rooms_count" value="2"/>
+      <column name="price" value="180.00"/>
+      <column name="description" value="Modern APARTMENTS with kitchen."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Studio H8"/>
+      <column name="accommodation_type" value="STUDIO"/>
+      <column name="floor_number" value="8"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="110.00"/>
+      <column name="description" value="Stylish studio with city access."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="Hotel Room I9"/>
+      <column name="accommodation_type" value="HOTEL_ROOM"/>
+      <column name="floor_number" value="9"/>
+      <column name="rooms_count" value="1"/>
+      <column name="price" value="85.00"/>
+      <column name="description" value="Comfortable hotel room with workspace."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+    <insert tableName="unit">
+      <column name="unit_name" value="APARTMENTS J10"/>
+      <column name="accommodation_type" value="APARTMENTS"/>
+      <column name="floor_number" value="10"/>
+      <column name="rooms_count" value="4"/>
+      <column name="price" value="250.00"/>
+      <column name="description" value="Penthouse APARTMENTS with terrace."/>
+      <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+    </insert>
+  </changeSet>
+</databaseChangeLog>
