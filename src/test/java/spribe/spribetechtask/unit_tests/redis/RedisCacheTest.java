@@ -1,4 +1,4 @@
-package spribe.spribetechtask.unit_tests;
+package spribe.spribetechtask.unit_tests.redis;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,18 +8,23 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import spribe.spribetechtask.unit_tests.containers.ContainersSetup;
+import spribe.spribetechtask.generator.UnitRandomGenerator;
+import spribe.spribetechtask.unit_tests.base_tests.BaseTest;
 
 /**
  * @Author danynest @CreateAt 12.03.25
  */
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RunWith(SpringRunner.class)
-public class RedisCacheTest extends ContainersSetup {
-  private static final String REDIS_TEST_KEY = "testREDIS_TEST_KEY";
+public class RedisCacheTest extends BaseTest {
+  private static final String REDIS_TEST_KEY = "testKey";
   private static final String REDIS_TEST_VALUE = "testValue";
   @Autowired private RedisTemplate<String, String> redisTemplate;
+  @MockitoBean
+  private UnitRandomGenerator unitRandomGenerator;
 
   @Test
   public void testRedisCacheStorage() {

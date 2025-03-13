@@ -1,35 +1,43 @@
-package spribe.spribetechtask.unit_tests;
+package spribe.spribetechtask.unit_tests.integrational_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static spribe.spribetechtask.model.AccommodationType.APARTMENTS;
+import static spribe.spribetechtask.model.AccommodationType.HOME;
 import static spribe.spribetechtask.model.OrderStatus.CANCELED;
 import static spribe.spribetechtask.model.OrderStatus.PENDING;
 import static spribe.spribetechtask.unit_tests.util.TestUtilComponents.*;
 
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import spribe.spribetechtask.generator.UnitRandomGenerator;
 import spribe.spribetechtask.model.BookingOrder;
 import spribe.spribetechtask.model.dto.BookingOrderDto;
 import spribe.spribetechtask.model.dto.UnitDto;
 import spribe.spribetechtask.model.dto.request.CreateUnitRequest;
 import spribe.spribetechtask.model.dto.request.PlaceAnOrderRequest;
 import spribe.spribetechtask.repository.BookingOrderRepository;
+import spribe.spribetechtask.repository.UnitRepository;
 import spribe.spribetechtask.service.BookingOrderService;
 import spribe.spribetechtask.service.UnitService;
-import spribe.spribetechtask.unit_tests.containers.ContainersSetup;
+import spribe.spribetechtask.unit_tests.base_tests.BaseTest;
 
 /**
  * @Author danynest @CreateAt 12.03.25
  */
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class BookingOrderTest extends ContainersSetup {
+public class BookingOrderTest extends BaseTest {
   @Autowired private BookingOrderService bookingOrderService;
   @Autowired private UnitService unitService;
   @Autowired private BookingOrderRepository bookingOrderRepository;
+  @MockitoBean
+  private UnitRandomGenerator unitRandomGenerator;
   private UnitDto savedUnit;
 
   @BeforeEach
@@ -41,9 +49,14 @@ public class BookingOrderTest extends ContainersSetup {
             PRICE_BEFORE_TAX_CREATED,
             ROOMS_TEST_COUNT_CREATE,
             FLOOR_TEST_NUMBER_CREATE,
-            APARTMENTS);
+            HOME);
     savedUnit = createUnitDto(createUnitRequest);
     checkCreatedUnit(savedUnit, createUnitRequest);
+  }
+
+  @AfterEach
+  void tearDown() {
+    bookingOrderRepository.deleteAll();
   }
 
   @Test
