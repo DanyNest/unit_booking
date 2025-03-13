@@ -1,4 +1,4 @@
-package spribe.spribetechtask.unit_tests;
+package spribe.spribetechtask.unit_tests.integrational_tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static spribe.spribetechtask.model.AccommodationType.FLAT;
@@ -12,8 +12,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,28 +19,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import spribe.spribetechtask.generator.UnitRandomGenerator;
 import spribe.spribetechtask.model.AccommodationType;
+import spribe.spribetechtask.model.BookingOrder;
 import spribe.spribetechtask.model.Unit;
 import spribe.spribetechtask.model.dto.BookingOrderDto;
 import spribe.spribetechtask.model.dto.UnitDto;
 import spribe.spribetechtask.model.dto.request.CreateUnitRequest;
 import spribe.spribetechtask.model.dto.request.PlaceAnOrderRequest;
 import spribe.spribetechtask.model.dto.request.UpdateUnitRequest;
+import spribe.spribetechtask.repository.BookingOrderRepository;
 import spribe.spribetechtask.repository.UnitRepository;
 import spribe.spribetechtask.service.BookingOrderService;
 import spribe.spribetechtask.service.UnitService;
-import spribe.spribetechtask.unit_tests.containers.ContainersSetup;
+import spribe.spribetechtask.unit_tests.base_tests.BaseTest;
 
 /**
  * @Author danynest @CreateAt 12.03.25
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UnitTest extends ContainersSetup {
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+public class UnitTest extends BaseTest {
   private static UnitDto savedUnit;
   @Autowired private UnitService unitService;
   @Autowired private UnitRepository unitRepository;
   @Autowired private BookingOrderService bookingOrderService;
+  @Autowired
+  private BookingOrderRepository bookingOrderRepository;
+  @MockitoBean
+  private UnitRandomGenerator unitRandomGenerator;
+
+  @BeforeEach
+  public void setUp() {
+    CreateUnitRequest createUnitRequest =
+        getCreateUnitRequest(
+            UNIT_TEST_NAME_CREATE,
+            DESCRIPTION_TEST_CREATE,
+            PRICE_BEFORE_TAX_CREATED,
+            ROOMS_TEST_COUNT_CREATE,
+            FLOOR_TEST_NUMBER_CREATE,
+            HOME);
+    savedUnit = createUnitDto(createUnitRequest);
+    checkCreatedUnit(savedUnit, createUnitRequest);
+  }
 
   private static Stream<Arguments> dynamicParams() {
     return Stream.of(
@@ -50,7 +70,7 @@ public class UnitTest extends ContainersSetup {
             1L, null, null, null, null, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
         Arguments.of(
             null,
-            "dynamic1",
+            UNIT_TEST_NAME_CREATE,
             null,
             null,
             null,
@@ -59,11 +79,11 @@ public class UnitTest extends ContainersSetup {
             BOOKING_TEST_DATE_FROM,
             BOOKING_TEST_DATE_TO),
         Arguments.of(
-            null, null, FLAT, null, null, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
+            null, null, HOME, null, null, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
         Arguments.of(
-            null, null, null, 1, null, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
+            null, null, null, FLOOR_TEST_NUMBER_CREATE, null, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
         Arguments.of(
-            null, null, null, null, 2, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
+            null, null, null, null, ROOMS_TEST_COUNT_CREATE, null, null, BOOKING_TEST_DATE_FROM, BOOKING_TEST_DATE_TO),
         Arguments.of(
             null,
             null,
@@ -90,34 +110,20 @@ public class UnitTest extends ContainersSetup {
             null,
             null,
             null,
-            new BigDecimal("4.60"),
-            new BigDecimal("4.60"),
+            new BigDecimal("1.15"),
+            new BigDecimal("1.15"),
             BOOKING_TEST_DATE_FROM,
             BOOKING_TEST_DATE_TO),
         Arguments.of(
-            2L,
-            "dynamic1",
-            FLAT,
-            1,
-            2,
-            new BigDecimal("4.60"),
-            new BigDecimal("4.60"),
-            BOOKING_TEST_DATE_FROM,
-            BOOKING_TEST_DATE_TO));
-  }
-
-  @BeforeEach
-  public void createUnitBeforeEachTest() {
-    CreateUnitRequest createUnitRequest =
-        getCreateUnitRequest(
+            1L,
             UNIT_TEST_NAME_CREATE,
-            DESCRIPTION_TEST_CREATE,
-            PRICE_BEFORE_TAX_CREATED,
+            HOME,
             ROOMS_TEST_COUNT_CREATE,
             FLOOR_TEST_NUMBER_CREATE,
-            HOME);
-    savedUnit = createUnitDto(createUnitRequest);
-    checkCreatedUnit(savedUnit, createUnitRequest);
+            new BigDecimal("1.15"),
+            new BigDecimal("1.15"),
+            BOOKING_TEST_DATE_FROM,
+            BOOKING_TEST_DATE_TO));
   }
 
   @Test
@@ -129,7 +135,6 @@ public class UnitTest extends ContainersSetup {
   }
 
   @ParameterizedTest
-  @Execution(ExecutionMode.SAME_THREAD)
   @MethodSource(value = "dynamicParams")
   void getAllAvailableByDynamicParams(
       Long unitId,
@@ -141,10 +146,6 @@ public class UnitTest extends ContainersSetup {
       BigDecimal priceTo,
       LocalDateTime fromDate,
       LocalDateTime toDate) {
-    CreateUnitRequest createUnitRequest =
-        getCreateUnitRequest("dynamic1", "dynamic1", new BigDecimal(4), 1, 2, FLAT);
-    UnitDto unitDto = createUnitDto(createUnitRequest);
-    System.out.println("✅ Created unit: " + unitDto);
     Optional<UnitDto> allAvailableUnits =
         unitService
             .getAllAvailableUnits(
